@@ -2,22 +2,37 @@ package com.example.demo;
 
 public class User{
 
-    private String fullName;
-    private String email;
-    private String password;
+    private String FullName;
+    private String Email;
+    private String Password;
 
     public void User(String fullName, String email, String password){
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
+        this.FullName = fullName;
+        this.Email = email;
+        this.Password = password;
     }
 
-    public String getFullName(String fullName){
-        return this.fullName;
+    public String getFullName(){
+        return this.FullName;
     }
 
-    public String setFullName(String fullname){
-        this.fullName = fullname;
+    public void setFullName(String fullname){
+        this.FullName = fullname;
     }
 
+    public String getEmail(){
+        return this.Email;
+    }
+
+    public void setEmail(String email){
+        this.Email = email;
+    }
+
+    public String getPassword(){
+        return this.Password;
+    }
+
+    public void setPassword(String password){
+        this.Password = password;
+    }
 }
