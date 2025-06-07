@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.classes;
 
 public class User{
 
@@ -6,7 +6,7 @@ public class User{
     private String Email;
     private String Password;
 
-    public void User(String fullName, String email, String password){
+    public User(String fullName, String email, String password){
         this.FullName = fullName;
         this.Email = email;
         this.Password = password;
@@ -35,4 +35,6 @@ public class User{
     public void setPassword(String password){
         this.Password = password;
     }
+
+    
 }
