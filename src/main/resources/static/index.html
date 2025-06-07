@@ -1,37 +1,698 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Pagamento de Conta</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank | Sistema de Pagamento de Contas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="200" cy="200" r="3" fill="rgba(255,255,255,0.05)"/><circle cx="800" cy="300" r="2" fill="rgba(255,255,255,0.05)"/><circle cx="400" cy="700" r="2.5" fill="rgba(255,255,255,0.05)"/><circle cx="600" cy="100" r="1.5" fill="rgba(255,255,255,0.05)"/><circle cx="100" cy="500" r="2" fill="rgba(255,255,255,0.05)"/></svg>');
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 32px 64px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1000px;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            min-height: 650px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a252f 0%, #2c3e50 50%, #34495e 100%);
+            padding: 50px 40px;
+            color: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%),
+                linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%);
+            animation: headerPattern 20s ease-in-out infinite;
+        }
+
+        @keyframes headerPattern {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        .bank-logo {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            line-height: 1.1;
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .bank-features {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 25px;
+        }
+
+        .bank-features h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            opacity: 0.9;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(5px);
+        }
+
+        .feature-bullet {
+            width: 8px;
+            height: 8px;
+            background: #3498db;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .form-container {
+            padding: 50px 45px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, transparent 0%, rgba(52, 152, 219, 0.02) 100%),
+                radial-gradient(circle at 90% 10%, rgba(46, 204, 113, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .form-wrapper {
+            max-width: 420px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .banking-header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e8f4fd;
+        }
+
+        .banking-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .banking-header p {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, transparent 100%);
+            border-radius: 8px;
+            margin-left: -15px;
+            position: relative;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            position: relative;
+        }
+
+        .input-group label::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 20px;
+            height: 2px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 1px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e8f4fd;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+            background: #ffffff;
+        }
+
+        .input-group input:valid {
+            border-color: #27ae60;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.1);
+        }
+
+        .currency-input {
+            position: relative;
+        }
+
+        .currency-input::before {
+            content: 'R$';
+            position: absolute;
+            left: 20px;
+            top: calc(50% + 8px);
+            transform: translateY(-50%);
+            color: #666;
+            font-weight: 600;
+            pointer-events: none;
+            z-index: 1;
+            font-size: 15px;
+        }
+
+        .currency-input input {
+            padding-left: 50px;
+        }
+
+        .pay-button {
+            width: 100%;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .pay-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, #34495e 0%, #2980b9 100%);
+        }
+
+        .pay-button:hover::before {
+            left: 100%;
+        }
+
+        .pay-button:disabled {
+            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .banking-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e8f4fd;
+            text-align: center;
+        }
+
+        .security-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 11px;
+            color: #7f8c8d;
+        }
+
+        .security-info div {
+            padding: 10px;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(52, 152, 219, 0.1);
+        }
+
+        .security-info strong {
+            color: #2c3e50;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        /* Tablet styles */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 750px;
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 40px 35px;
+                text-align: center;
+                align-items: center;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .header-features {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .form-container {
+                padding: 40px 35px;
+            }
+
+            .academic-info {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                margin: 0;
+                border-radius: 20px;
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 35px 25px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header p {
+                font-size: 14px;
+            }
+
+            .header-features {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .form-container {
+                padding: 35px 25px;
+            }
+
+            .academic-header h2 {
+                font-size: 20px;
+            }
+
+            .section-title {
+                font-size: 16px;
+                margin-bottom: 20px;
+                padding: 12px;
+            }
+
+            .input-group {
+                margin-bottom: 20px;
+            }
+
+            .input-group input {
+                padding: 14px 18px;
+                font-size: 14px;
+            }
+
+            .currency-input::before {
+                left: 18px;
+                top: calc(50% + 6px);
+                font-size: 14px;
+            }
+
+            .currency-input input {
+                padding-left: 45px;
+            }
+
+            .pay-button {
+                padding: 16px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 25px 20px;
+            }
+
+            .header {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .tech-tag {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+        }
+
+        /* Animation on load */
+        .container {
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result.success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #27ae60;
+        }
+
+        .result.error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #e74c3c;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <h2>Pagamento de Conta</h2>
-    <form id="paymentForm">
-        <h3>Dados da Conta</h3>
-        <div>
-            <label>ID da Conta:</label><br>
-            <input type="number" id="accountId" required>
+    <div class="container">
+        <div class="header">
+            <div class="bank-logo">SecureBank</div>
+            <h1>Sistema de Pagamentos</h1>
+            <p>Realize seus pagamentos de forma segura e eficiente através da nossa plataforma bancária digital moderna</p>
+            
+            <div class="bank-features">
+                <h3>Recursos do Sistema</h3>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-bullet"></div>
+                        <span>Criptografia de dados bancários</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-bullet"></div>
+                        <span>Processamento em tempo real</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-bullet"></div>
+                        <span>Validação automática de saldo</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-bullet"></div>
+                        <span>Histórico de transações</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label>Saldo da Conta:</label><br>
-            <input type="number" id="balance" step="0.01" required>
+        
+        <div class="form-container">
+            <div class="form-wrapper">
+                <div class="banking-header">
+                    <h2>Pagamento de Conta</h2>
+                    <p>Preencha os dados para processar seu pagamento</p>
+                </div>
+
+                <form id="paymentForm">
+                    <div class="section-title">
+                        Informações da Conta
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="accountId">Número da Conta</label>
+                        <input type="number" id="accountId" required placeholder="Digite o número da sua conta">
+                    </div>
+                    
+                    <div class="input-group currency-input">
+                        <label for="balance">Saldo Disponível</label>
+                        <input type="number" id="balance" step="0.01" required placeholder="0,00">
+                    </div>
+                    
+                    <div class="section-title" style="margin-top: 30px;">
+                        Dados do Pagamento
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="billCode">Código de Barras do Boleto</label>
+                        <input type="text" id="billCode" required placeholder="Digite o código de barras">
+                    </div>
+                    
+                    <div class="input-group currency-input">
+                        <label for="value">Valor do Pagamento</label>
+                        <input type="number" id="value" step="0.01" required placeholder="0,00">
+                    </div>
+                    
+                    <button type="submit" class="pay-button" id="payButton">
+                        Confirmar Pagamento
+                    </button>
+                    
+                    <div class="loading" id="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Processando pagamento...</p>
+                    </div>
+                </form>
+                
+                <div id="result" class="result"></div>
+
+                <div class="banking-footer">
+                    <div class="security-info">
+                        <div>
+                            <strong>Segurança:</strong>
+                            Conexão SSL 256-bit
+                        </div>
+                        <div>
+                            <strong>Suporte:</strong>
+                            24h por dia, 7 dias por semana
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label>Código do Boleto:</label><br>
-            <input type="text" id="billCode" required>
-        </div>
-        <div>
-            <label>Valor a Pagar:</label><br>
-            <input type="number" id="value" step="0.01" required>
-        </div>
-        <br>
-        <button type="submit">Pagar</button>
-    </form>
-    <div id="result"></div>
+    </div>
 
     <script>
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            const payButton = document.getElementById('payButton');
+            const loading = document.getElementById('loading');
+            const resultDiv = document.getElementById('result');
+
+            // Show loading
+            payButton.disabled = true;
+            payButton.textContent = 'Processando...';
+            loading.style.display = 'block';
+            resultDiv.className = 'result';
 
             const data = {
                 account: {
@@ -51,12 +712,40 @@
             })
             .then(response => response.text())
             .then(result => {
-                document.getElementById('result').innerText = result;
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    payButton.disabled = false;
+                    payButton.textContent = 'Confirmar Pagamento';
+                    
+                    resultDiv.textContent = result;
+                    resultDiv.className = result.includes('Erro') || result.includes('Saldo insuficiente') 
+                        ? 'result error show' 
+                        : 'result success show';
+                }, 1500);
             })
             .catch(error => {
-                document.getElementById('result').innerText = 'Erro: ' + error;
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    payButton.disabled = false;
+                    payButton.textContent = 'Confirmar Pagamento';
+                    
+                    resultDiv.textContent = 'Erro: ' + error;
+                    resultDiv.className = 'result error show';
+                }, 1500);
+            });
+        });
+
+        // Format currency inputs
+        const currencyInputs = document.querySelectorAll('input[step="0.01"]');
+        currencyInputs.forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^\d.,]/g, '');
+                if (value.includes(',')) {
+                    value = value.replace(',', '.');
+                }
+                e.target.value = value;
             });
         });
     </script>
 </body>
-</html>x
+</html>
