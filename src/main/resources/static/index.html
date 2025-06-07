@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pagamento de Conta</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h2>Pagamento de Conta</h2>
+    <form id="paymentForm">
+        <h3>Dados da Conta</h3>
+        <div>
+            <label>ID da Conta:</label><br>
+            <input type="number" id="accountId" required>
+        </div>
+        <div>
+            <label>Saldo da Conta:</label><br>
+            <input type="number" id="balance" step="0.01" required>
+        </div>
+        <div>
+            <label>Código do Boleto:</label><br>
+            <input type="text" id="billCode" required>
+        </div>
+        <div>
+            <label>Valor a Pagar:</label><br>
+            <input type="number" id="value" step="0.01" required>
+        </div>
+        <br>
+        <button type="submit">Pagar</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const data = {
+                account: {
+                    id: parseInt(document.getElementById('accountId').value),
+                    balance: parseFloat(document.getElementById('balance').value)
+                },
+                billCode: document.getElementById('billCode').value,
+                value: parseFloat(document.getElementById('value').value)
+            };
+
+            fetch('/payBill', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById('result').innerText = result;
+            })
+            .catch(error => {
+                document.getElementById('result').innerText = 'Erro: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>x
