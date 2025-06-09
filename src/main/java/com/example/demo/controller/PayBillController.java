@@ -9,6 +9,7 @@ import com.example.demo.classes.BillPayment;
 @RestController
 public class PayBillController {
     
+    // Endpoint para realizar o pagamento de uma conta
     @PostMapping("/payBill")
     public String payBill(@RequestBody BillPayment payment) {
         

@@ -5,6 +5,7 @@ public class checkingAccount extends User {
     private double balance;
     private int accountNumber;
 
+    //conta-corrente, ou checking account, é uma conta bancária que permite depósitos e saques frequentes
     public checkingAccount(String fullName, String email, String password, double balance) {
         super(fullName, email, password);
         this.balance = balance;

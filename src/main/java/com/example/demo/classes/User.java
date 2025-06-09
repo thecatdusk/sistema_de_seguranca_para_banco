@@ -6,6 +6,7 @@ public class User{
     private String Email;
     private String Password;
 
+    //Serve como usuário base para outras classes, como checkingAccount
     public User(String fullName, String email, String password){
         this.FullName = fullName;
         this.Email = email;

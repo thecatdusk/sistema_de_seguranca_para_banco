@@ -1,5 +1,6 @@
 package com.example.demo.classes;
 
+//criado somente para ter getters e setters
 public class BillPayment {
     private checkingAccount account;
     private String billCode; //código da conta para pagar
